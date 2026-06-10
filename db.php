@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$dbHost = '127.0.0.1';
-$dbUser = 'root';
-$dbPass = '';
-$dbName = 'jly_projectbali';
+$dbHost = getenv('DB_HOST') ?: '127.0.0.1';
+$dbUser = getenv('DB_USER') ?: 'root';
+$dbPass = getenv('DB_PASS') ?: '';
+$dbName = getenv('DB_NAME') ?: 'jly_projectbali';
 
 try {
     $conn = new mysqli($dbHost, $dbUser, $dbPass);

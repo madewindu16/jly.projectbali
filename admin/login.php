@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
@@ -50,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <section class="admin-panel">
       <span class="eyebrow">Admin Area</span>
       <h1>Masuk Dashboard</h1>
-      <?php if ($error): ?>
+      <?php if ($error) : ?>
         <p class="admin-alert"><?= e($error) ?></p>
       <?php endif; ?>
       <form method="post" class="admin-form">

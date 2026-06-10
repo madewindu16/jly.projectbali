@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/db.php';
@@ -103,14 +104,14 @@ $bookingStatus = (string) ($_GET['booking'] ?? '');
   </header>
 
   <main>
-    <?php if ($bookingStatus !== ''): ?>
+    <?php if ($bookingStatus !== '') : ?>
       <div class="booking-alert <?= $bookingStatus === 'success' ? 'is-success' : 'is-error' ?>">
         <div class="container">
-          <?php if ($bookingStatus === 'success'): ?>
+          <?php if ($bookingStatus === 'success') : ?>
             Request booking berhasil dikirim. Admin akan menghubungi Anda untuk konfirmasi.
-          <?php elseif ($bookingStatus === 'unavailable'): ?>
+          <?php elseif ($bookingStatus === 'unavailable') : ?>
             Salah satu produk sudah booked di tanggal tersebut. Silakan pilih tanggal atau produk lain.
-          <?php else: ?>
+          <?php else : ?>
             Request booking belum bisa diproses. Pastikan data dan produk sudah lengkap.
           <?php endif; ?>
         </div>
@@ -133,21 +134,21 @@ $bookingStatus = (string) ($_GET['booking'] ?? '');
     <section class="section">
       <div class="container">
         <div class="catalog-grid">
-          <?php if ($result && $productCount > 0): ?>
-            <?php while ($row = $result->fetch_assoc()): ?>
-              <?php
-                $displayPrice = 'Rp ' . number_format((float) $row['price'], 0, ',', '.');
-                $hasDiscount = $row['discount_price'] !== null && (float) $row['discount_price'] > 0;
-                $finalPrice = $hasDiscount
+          <?php if ($result && $productCount > 0) : ?>
+                <?php while ($row = $result->fetch_assoc()) : ?>
+                    <?php
+                    $displayPrice = 'Rp ' . number_format((float) $row['price'], 0, ',', '.');
+                    $hasDiscount = $row['discount_price'] !== null && (float) $row['discount_price'] > 0;
+                    $finalPrice = $hasDiscount
                     ? 'Rp ' . number_format((float) $row['discount_price'], 0, ',', '.')
                     : $displayPrice;
-                $discountPercent = $hasDiscount
+                    $discountPercent = $hasDiscount
                     ? max(1, (int) round((((float) $row['price'] - (float) $row['discount_price']) / (float) $row['price']) * 100))
                     : 0;
-                $imageUrl = sanitize_image_url($row['image_url'] ?? '');
-                $bookedDates = array_values(array_filter(explode(',', (string) $row['booked_dates'])));
-                $bookedDatesJson = json_encode($bookedDates, JSON_UNESCAPED_SLASHES);
-              ?>
+                    $imageUrl = sanitize_image_url($row['image_url'] ?? '');
+                    $bookedDates = array_values(array_filter(explode(',', (string) $row['booked_dates'])));
+                    $bookedDatesJson = json_encode($bookedDates, JSON_UNESCAPED_SLASHES);
+                    ?>
               <article
                 class="product-card reveal <?= $hasDiscount ? 'has-promo' : '' ?>"
                 data-product-id="<?= (int) $row['id'] ?>"
@@ -162,43 +163,43 @@ $bookingStatus = (string) ($_GET['booking'] ?? '');
                 data-product-flowers="<?= e($row['flowers']) ?>"
                 data-product-bundle="<?= e($row['bundle_note'] ?? '') ?>"
               >
-                <?php if ($imageUrl !== ''): ?>
+                    <?php if ($imageUrl !== '') : ?>
                   <div class="product-media">
-                    <?php if ($hasDiscount): ?>
+                        <?php if ($hasDiscount) : ?>
                       <span class="discount-badge">
                         <span>Hemat</span>
-                        <?= $discountPercent ?>%
+                            <?= $discountPercent ?>%
                       </span>
-                    <?php endif; ?>
+                        <?php endif; ?>
                     <img src="<?= e($imageUrl) ?>" alt="<?= e($row['name']) ?>">
                   </div>
-                <?php else: ?>
+                    <?php else : ?>
                   <div class="product-media product-placeholder">
-                    <?php if ($hasDiscount): ?>
+                        <?php if ($hasDiscount) : ?>
                       <span class="discount-badge">
                         <span>Hemat</span>
-                        <?= $discountPercent ?>%
+                            <?= $discountPercent ?>%
                       </span>
-                    <?php endif; ?>
+                        <?php endif; ?>
                     <span class="material-symbols-outlined" aria-hidden="true">photo_frame</span>
                   </div>
-                <?php endif; ?>
+                    <?php endif; ?>
 
                 <div class="product-content">
                   <span class="eyebrow"><?= e($row['category_name'] ?? 'Produk') ?></span>
                   <h2 class="card-title"><?= e($row['name']) ?></h2>
                   <p class="price-tag <?= $hasDiscount ? 'has-discount' : '' ?>">
-                    <?php if ($hasDiscount): ?>
+                    <?php if ($hasDiscount) : ?>
                       <span class="price-original"><?= e($displayPrice) ?></span>
                     <?php endif; ?>
                     <span class="price-current"><strong><?= e($finalPrice) ?></strong> / Hari</span>
-                    <?php if ($hasDiscount): ?>
+                    <?php if ($hasDiscount) : ?>
                       <span class="promo-caption">Harga promo terbatas</span>
                     <?php endif; ?>
                   </p>
-                  <?php if (!empty($row['bundle_note'])): ?>
+                    <?php if (!empty($row['bundle_note'])) : ?>
                     <p class="bundle-note"><span>Bundling</span><?= e($row['bundle_note']) ?></p>
-                  <?php endif; ?>
+                    <?php endif; ?>
                   <p><?= e($row['description']) ?></p>
                   <div class="product-card-actions">
                     <button class="button button-outline" type="button" data-product-detail>Detail Produk</button>
@@ -209,8 +210,8 @@ $bookingStatus = (string) ($_GET['booking'] ?? '');
                   </div>
                 </div>
               </article>
-            <?php endwhile; ?>
-          <?php else: ?>
+                <?php endwhile; ?>
+          <?php else : ?>
             <p>Belum ada produk di katalog.</p>
           <?php endif; ?>
         </div>

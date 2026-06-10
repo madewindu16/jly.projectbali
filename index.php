@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/db.php';
@@ -120,19 +121,19 @@ $featuredProducts = $conn->query(
         </div>
 
         <div class="product-grid">
-          <?php if ($featuredProducts && $featuredProducts->num_rows > 0): ?>
-            <?php while ($row = $featuredProducts->fetch_assoc()): ?>
-              <?php
-                $displayPrice = 'Rp ' . number_format((float) $row['price'], 0, ',', '.');
-                $hasDiscount = $row['discount_price'] !== null && (float) $row['discount_price'] > 0;
-                $finalPrice = $hasDiscount
+          <?php if ($featuredProducts && $featuredProducts->num_rows > 0) : ?>
+                <?php while ($row = $featuredProducts->fetch_assoc()) : ?>
+                    <?php
+                    $displayPrice = 'Rp ' . number_format((float) $row['price'], 0, ',', '.');
+                    $hasDiscount = $row['discount_price'] !== null && (float) $row['discount_price'] > 0;
+                    $finalPrice = $hasDiscount
                     ? 'Rp ' . number_format((float) $row['discount_price'], 0, ',', '.')
                     : $displayPrice;
-                $discountPercent = $hasDiscount
+                    $discountPercent = $hasDiscount
                     ? max(1, (int) round((((float) $row['price'] - (float) $row['discount_price']) / (float) $row['price']) * 100))
                     : 0;
-                $imageUrl = sanitize_image_url($row['image_url'] ?? '');
-              ?>
+                    $imageUrl = sanitize_image_url($row['image_url'] ?? '');
+                    ?>
               <article
                 class="product-card reveal <?= $hasDiscount ? 'has-promo' : '' ?>"
                 data-search-title="<?= e($row['name']) ?>"
@@ -145,49 +146,49 @@ $featuredProducts = $conn->query(
                 data-product-flowers="<?= e($row['flowers']) ?>"
                 data-product-bundle="<?= e($row['bundle_note'] ?? '') ?>"
               >
-                <?php if ($imageUrl !== ''): ?>
+                    <?php if ($imageUrl !== '') : ?>
                   <div class="product-media">
-                    <?php if ($hasDiscount): ?>
+                        <?php if ($hasDiscount) : ?>
                       <span class="discount-badge">
                         <span>Hemat</span>
-                        <?= $discountPercent ?>%
+                            <?= $discountPercent ?>%
                       </span>
-                    <?php endif; ?>
+                        <?php endif; ?>
                     <img src="<?= e($imageUrl) ?>" alt="<?= e($row['name']) ?>">
                   </div>
-                <?php else: ?>
+                    <?php else : ?>
                   <div class="product-media product-placeholder">
-                    <?php if ($hasDiscount): ?>
+                        <?php if ($hasDiscount) : ?>
                       <span class="discount-badge">
                         <span>Hemat</span>
-                        <?= $discountPercent ?>%
+                            <?= $discountPercent ?>%
                       </span>
-                    <?php endif; ?>
+                        <?php endif; ?>
                     <span class="material-symbols-outlined" aria-hidden="true">photo_frame</span>
                   </div>
-                <?php endif; ?>
+                    <?php endif; ?>
 
                 <div class="product-content">
                   <span class="eyebrow"><?= e($row['category_name'] ?? 'Produk') ?></span>
                   <h3 class="card-title"><?= e($row['name']) ?></h3>
                   <p class="price-tag <?= $hasDiscount ? 'has-discount' : '' ?>">
-                    <?php if ($hasDiscount): ?>
+                    <?php if ($hasDiscount) : ?>
                       <span class="price-original"><?= e($displayPrice) ?></span>
                     <?php endif; ?>
                     <span class="price-current"><strong><?= e($finalPrice) ?></strong> / Hari</span>
-                    <?php if ($hasDiscount): ?>
+                    <?php if ($hasDiscount) : ?>
                       <span class="promo-caption">Harga promo terbatas</span>
                     <?php endif; ?>
                   </p>
-                  <?php if (!empty($row['bundle_note'])): ?>
+                    <?php if (!empty($row['bundle_note'])) : ?>
                     <p class="bundle-note"><span>Bundling</span><?= e($row['bundle_note']) ?></p>
-                  <?php endif; ?>
+                    <?php endif; ?>
                   <p><?= e($row['description']) ?></p>
                   <button class="button button-outline" type="button" data-product-detail>Detail Produk</button>
                 </div>
               </article>
-            <?php endwhile; ?>
-          <?php else: ?>
+                <?php endwhile; ?>
+          <?php else : ?>
             <p>Belum ada produk terpilih. Centang produk dari dashboard admin.</p>
           <?php endif; ?>
         </div>

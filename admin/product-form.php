@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
@@ -176,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <main class="admin-shell">
     <section class="admin-panel">
-      <?php if ($error): ?>
+      <?php if ($error) : ?>
         <p class="admin-alert"><?= e($error) ?></p>
       <?php endif; ?>
 
@@ -186,12 +187,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           Kategori
           <select name="category_id" required>
             <option value="">Pilih kategori</option>
-            <?php if ($categories): ?>
-              <?php while ($category = $categories->fetch_assoc()): ?>
+            <?php if ($categories) : ?>
+                <?php while ($category = $categories->fetch_assoc()) : ?>
                 <option value="<?= (int) $category['id'] ?>" <?= ((int) $product['category_id'] === (int) $category['id']) ? 'selected' : '' ?>>
-                  <?= e($category['name']) ?>
+                    <?= e($category['name']) ?>
                 </option>
-              <?php endwhile; ?>
+                <?php endwhile; ?>
             <?php endif; ?>
           </select>
         </label>

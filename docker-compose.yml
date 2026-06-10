@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: jly-app
+    ports:
+      - "8080:80"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=jly_db
+      - DB_USER=jly_user
+      - DB_PASS=jly_pass
+    depends_on:
+      - db
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  db:
+    image: mysql:8.0
+    container_name: jly-db
+    environment:
+      MYSQL_DATABASE: jly_db
+      MYSQL_USER: jly_user
+      MYSQL_PASSWORD: jly_pass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database_admin.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+volumes:
+  db_data:

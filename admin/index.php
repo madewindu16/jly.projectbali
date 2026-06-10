@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/db.php';
@@ -160,8 +161,8 @@ function format_admin_date(?string $date): string
         </div>
 
         <div class="admin-booking-list">
-          <?php if ($bookingRequests && $bookingRequests->num_rows > 0): ?>
-            <?php while ($request = $bookingRequests->fetch_assoc()): ?>
+          <?php if ($bookingRequests && $bookingRequests->num_rows > 0) : ?>
+                <?php while ($request = $bookingRequests->fetch_assoc()) : ?>
               <article class="admin-booking-item admin-request-item">
                 <time datetime="<?= e($request['event_date']) ?>"><?= e(format_admin_date($request['event_date'])) ?></time>
                 <div>
@@ -170,11 +171,11 @@ function format_admin_date(?string $date): string
                   <small><?= e($request['phone']) ?><?= !empty($request['event_location']) ? ' - ' . e($request['event_location']) : '' ?></small>
                 </div>
                 <span class="admin-status <?= $request['status'] === 'new' ? 'is-active' : 'is-muted' ?>">
-                  <?= e($request['status']) ?>
+                    <?= e($request['status']) ?>
                 </span>
               </article>
-            <?php endwhile; ?>
-          <?php else: ?>
+                <?php endwhile; ?>
+          <?php else : ?>
             <p class="admin-empty">Belum ada request booking dari katalog.</p>
           <?php endif; ?>
         </div>
@@ -189,21 +190,21 @@ function format_admin_date(?string $date): string
         </div>
 
         <div class="admin-booking-list">
-          <?php if ($upcomingBookings && $upcomingBookings->num_rows > 0): ?>
-            <?php while ($booking = $upcomingBookings->fetch_assoc()): ?>
+          <?php if ($upcomingBookings && $upcomingBookings->num_rows > 0) : ?>
+                <?php while ($booking = $upcomingBookings->fetch_assoc()) : ?>
               <article class="admin-booking-item">
                 <time datetime="<?= e($booking['booked_date']) ?>"><?= e(format_admin_date($booking['booked_date'])) ?></time>
                 <div>
                   <strong><?= e($booking['product_name']) ?></strong>
                   <span><?= e($booking['category_name'] ?? 'Produk') ?></span>
-                  <?php if (!empty($booking['customer_name']) || !empty($booking['note'])): ?>
+                    <?php if (!empty($booking['customer_name']) || !empty($booking['note'])) : ?>
                     <small><?= e(trim(($booking['customer_name'] ?? '') . ' ' . ($booking['note'] ?? ''))) ?></small>
-                  <?php endif; ?>
+                    <?php endif; ?>
                 </div>
                 <a href="product-form.php?id=<?= (int) $booking['product_id'] ?>">Edit</a>
               </article>
-            <?php endwhile; ?>
-          <?php else: ?>
+                <?php endwhile; ?>
+          <?php else : ?>
             <p class="admin-empty">Belum ada tanggal booked yang akan datang.</p>
           <?php endif; ?>
         </div>
@@ -218,14 +219,14 @@ function format_admin_date(?string $date): string
         </div>
 
         <div class="admin-category-list">
-          <?php if ($categoryStats && $categoryStats->num_rows > 0): ?>
-            <?php while ($category = $categoryStats->fetch_assoc()): ?>
+          <?php if ($categoryStats && $categoryStats->num_rows > 0) : ?>
+                <?php while ($category = $categoryStats->fetch_assoc()) : ?>
               <div>
                 <span><?= e($category['name']) ?></span>
                 <strong><?= (int) $category['total_products'] ?></strong>
               </div>
-            <?php endwhile; ?>
-          <?php else: ?>
+                <?php endwhile; ?>
+          <?php else : ?>
             <p class="admin-empty">Kategori belum tersedia.</p>
           <?php endif; ?>
         </div>
@@ -255,8 +256,8 @@ function format_admin_date(?string $date): string
             </tr>
           </thead>
           <tbody>
-            <?php if ($products && $products->num_rows > 0): ?>
-              <?php while ($product = $products->fetch_assoc()): ?>
+            <?php if ($products && $products->num_rows > 0) : ?>
+                <?php while ($product = $products->fetch_assoc()) : ?>
                 <tr>
                   <td>
                     <strong><?= e($product['name']) ?></strong>
@@ -265,7 +266,7 @@ function format_admin_date(?string $date): string
                   <td><?= e($product['category_name'] ?? '-') ?></td>
                   <td>
                     Rp <?= number_format((float) $product['price'], 0, ',', '.') ?>
-                    <?php if (!empty($product['discount_price'])): ?>
+                    <?php if (!empty($product['discount_price'])) : ?>
                       <span>Diskon: Rp <?= number_format((float) $product['discount_price'], 0, ',', '.') ?></span>
                     <?php endif; ?>
                   </td>
@@ -288,8 +289,8 @@ function format_admin_date(?string $date): string
                     </form>
                   </td>
                 </tr>
-              <?php endwhile; ?>
-            <?php else: ?>
+                <?php endwhile; ?>
+            <?php else : ?>
               <tr>
                 <td colspan="7">Belum ada produk. Tambahkan produk pertama dari tombol di atas.</td>
               </tr>
