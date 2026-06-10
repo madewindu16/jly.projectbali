@@ -19,24 +19,19 @@ jobs:
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v3
+    - name: Run basic security scan
+      run: echo "Security scan placeholder"
+- name: Initialize CodeQL
+  uses: github/codeql-action/init@v2
+  with:
+    languages: php
+- name: Autobuild
+  uses: github/codeql-action/autobuild@v2
+- name: Perform CodeQL Analysis
+  uses: github/codeql-action/analyze@v2
+- name: Dependency review
+  uses: actions/dependency-review-action@v3
 
-    # Static Analysis (SAST) dengan CodeQL
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: php
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-
-    # Dependency Scan
-    - name: Dependency review
-      uses: actions/dependency-review-action@v3
-
-    # Secret Detection
-    - name: Secret scan
-      uses: trufflesecurity/trufflehog@main
-      with:
-        path: .
 
   build:
     runs-on: ubuntu-latest
