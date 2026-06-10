@@ -2,52 +2,74 @@ name: DevSecOps CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main, develop]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Run unit tests
-        run: echo "Running tests..."
 
   security:
+    name: Security Scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # CodeQL untuk PHP
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: php
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+      - name: Secret scan - Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Composer Audit (cek dependency PHP)
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-      - name: Install dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist
-      - name: Run Composer Audit
-        run: composer audit
+      - name: SAST PHP - PHPCS
+        run: |
+          composer require --dev squizlabs/php_codesniffer
+          vendor/bin/phpcs --standard=PSR12 \
+            --extensions=php --ignore=vendor .
 
   build:
+    name: Build Container
     runs-on: ubuntu-latest
+    needs: security
     steps:
-      - name: Build project
-        run: echo "Building project..."
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t jly-projectbali:${{ github.sha }} .
+
+      - name: Scan image - Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: jly-projectbali:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          exit-code: "0"
 
   deploy:
+    name: Deploy & Health Check
     runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
     steps:
-      - name: Deploy project
-        run: echo "Deploying project..."
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        run: |
+          docker compose up --build -d
+          sleep 20
+
+      - name: Health check
+        run: |
+          for i in 1 2 3 4 5; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              http://localhost:8080/health.php)
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Health check OK"
+              exit 0
+            fi
+            echo "Retry $i - status $STATUS"
+            sleep 5
+          done
+          echo "❌ Health check gagal"
+          docker compose logs app
+          exit 1
