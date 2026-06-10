@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Static Analysis (SAST) dengan CodeQL
+      # CodeQL untuk PHP
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
@@ -30,13 +30,15 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
-      # Dependency Scan
-      - name: Dependency review
-        uses: actions/dependency-review-action@v3
-
-      # Placeholder untuk secret detection (bisa diganti Gitleaks/TruffleHog)
-      - name: Run basic security scan
-        run: echo "Security scan placeholder"
+      # Composer Audit (cek dependency PHP)
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist
+      - name: Run Composer Audit
+        run: composer audit
 
   build:
     runs-on: ubuntu-latest
